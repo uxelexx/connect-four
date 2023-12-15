@@ -1,3 +1,4 @@
+import { COLUMNS, ROWS } from "@/constants";
 import type { Board } from "@/types";
 
 function checkWin(
@@ -7,7 +8,7 @@ function checkWin(
   rowIncrement: number,
   colIncrement: number,
 ) {
-  const symbol = board.grid[startRow][startCol];
+  const symbol = board[startRow][startCol];
   if (symbol === "") {
     return false;
   }
@@ -15,7 +16,7 @@ function checkWin(
   for (let i = 1; i < 4; i++) {
     const row = startRow + i * rowIncrement;
     const col = startCol + i * colIncrement;
-    if (board.grid[row][col] !== symbol) {
+    if (board[row][col] !== symbol) {
       return false;
     }
   }
@@ -24,8 +25,8 @@ function checkWin(
 }
 
 function checkDiagonal(board: Board) {
-  for (let row = 3; row < board.rows; row++) {
-    for (let col = 0; col < board.columns - 3; col++) {
+  for (let row = 3; row < ROWS; row++) {
+    for (let col = 0; col < COLUMNS - 3; col++) {
       if (checkWin(board, row, col, -1, 1)) {
         return true;
       }
@@ -36,8 +37,8 @@ function checkDiagonal(board: Board) {
 }
 
 function checkDiagonalReverse(board: Board) {
-  for (let row = 0; row < board.rows - 3; row++) {
-    for (let col = 0; col < board.columns - 3; col++) {
+  for (let row = 0; row < ROWS - 3; row++) {
+    for (let col = 0; col < COLUMNS - 3; col++) {
       if (checkWin(board, row, col, 1, 1)) {
         return true;
       }
@@ -48,8 +49,8 @@ function checkDiagonalReverse(board: Board) {
 }
 
 function checkVertical(board: Board) {
-  for (let col = 0; col < board.columns; col++) {
-    for (let row = 0; row < board.rows - 3; row++) {
+  for (let col = 0; col < COLUMNS; col++) {
+    for (let row = 0; row < ROWS - 3; row++) {
       if (checkWin(board, row, col, 1, 0)) {
         return true;
       }
@@ -58,8 +59,8 @@ function checkVertical(board: Board) {
 }
 
 function checkHorizontal(board: Board) {
-  for (let row = 0; row < board.rows; row++) {
-    for (let col = 0; col < board.columns - 3; col++) {
+  for (let row = 0; row < ROWS; row++) {
+    for (let col = 0; col < COLUMNS - 3; col++) {
       if (checkWin(board, row, col, 0, 1)) {
         return true;
       }
