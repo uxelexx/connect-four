@@ -2,146 +2,104 @@
 
 import styles from "./ConnectFour.module.css";
 
-import type { Board as BoardType, Player, PlayerTime, Winner } from "@/types";
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
+import { COLUMNS } from "@/constants";
+import { produce } from "immer";
+import { dispatcher } from "./ConnectFour.actions";
+import reducer, { initialState } from "./ConnectFour.reducer";
+import { checkWinner } from "./check-winner";
 import Board from "../Board/Board";
 import Button from "../Button/Button";
 import PlayerCard from "../PlayerCard/PlayerCard";
 import PlayerTurn from "../PlayerTurn/PlayerTurn";
-import { checkWinner } from "./check-winner";
-
-const ROWS = 6;
-const COLUMNS = 7;
-const ROUND_TIME = 5;
-
-function makeGrid(rows = ROWS, columns = COLUMNS) {
-  return Array.from({ length: rows }, () => Array(columns).fill(""));
-}
-
-const initialBoard: BoardType = {
-  rows: ROWS,
-  columns: COLUMNS,
-  grid: makeGrid(),
-};
-
-const initialTimer: PlayerTime = {
-  X: ROUND_TIME,
-  O: ROUND_TIME,
-};
+import type { Board as BoardType, Player } from "@/types";
 
 export default function ConnectFour() {
-  const [board, setBoard] = useState<BoardType>(initialBoard);
-  const [player, setPlayer] = useState<Player>("X");
-  const [winner, setWinner] = useState<Winner>(null);
-  const [timer, setTimer] = useState<PlayerTime>(initialTimer);
-  const [score, setScore] = useState<Record<Player, number>>({ X: 0, O: 0 });
-  const [start, setStart] = useState(false);
-  const isFull = board.grid[0].every(cell => cell !== "");
+  const [{ board, player, winner, timer, start, score }, dispatch] = useReducer(
+    reducer,
+    initialState,
+  );
+  const isFull = board[0].every(cell => cell !== "");
+  const {
+    setWinnerAndGame,
+    startAndPauseGame,
+    restartGame,
+    resetBoard,
+    updateBoard,
+    changePlayerAndResetTimer,
+    startGame,
+    timeOutSwapPlayers,
+    timerCountDown,
+    setWinner,
+  } = dispatcher(dispatch);
 
   function isWinner(board: BoardType) {
     const hasWinner = checkWinner(board);
 
     if (hasWinner) {
-      setWinner(player);
-      setStart(false);
-      setScore(prevScore => ({
-        ...prevScore,
-        [player]: prevScore[player] + 1,
-      }));
-    }
-  }
-
-  function resetTimer(player: Player) {
-    setTimer(prevTimer => ({ ...prevTimer, [player]: ROUND_TIME }));
-  }
-
-  function startAndPauseGame() {
-    if (winner) return;
-    setStart(!start);
-  }
-
-  function resetScore() {
-    if (confirm("Are you sure you want to reset the score and restart game?")) {
-      setScore({ X: 0, O: 0 });
-      restartGame();
+      setWinnerAndGame(player);
+      return;
     }
   }
 
   function addPiece(column: number, player: Player) {
-    if (column < 0 || column >= board.columns || winner) {
+    if (column < 0 || column >= COLUMNS || winner) {
       return;
     }
 
     if (!start) {
-      setStart(true);
+      startGame();
       return;
     }
 
-    const row = board.grid.findLastIndex(row => row[column] === "");
+    const row = board.findLastIndex(row => row[column] === "");
 
     if (row >= 0) {
       if (isFull) {
         setWinner("Tie");
         return;
       }
-      const updateGrid = [...board.grid];
-      updateGrid[row][column] = player;
 
-      setBoard(prevBoard => ({
-        ...prevBoard,
-        grid: updateGrid,
-      }));
+      const newBoard = produce(board, draft => {
+        draft[row][column] = player;
+      });
 
-      isWinner(board);
-
-      setPlayer(player === "X" ? "O" : "X");
-      resetTimer(player === "X" ? "O" : "X");
+      updateBoard(newBoard);
+      isWinner(newBoard);
+      changePlayerAndResetTimer(player === "X" ? "O" : "X");
     }
-  }
-
-  function restartGame() {
-    setBoard({
-      ...initialBoard,
-      grid: makeGrid(),
-    });
-    setWinner(null);
-    setPlayer("X");
-    setTimer(initialTimer);
-    setStart(true);
   }
 
   useEffect(() => {
-    if (!start) return;
-    if (isFull) {
-      setWinner("Tie");
-      return;
-    }
+    if (!start || isFull) return;
 
     const interval = setInterval(() => {
-      setTimer(prev => ({
-        ...prev,
-        [player]: prev[player] - 1,
-      }));
+      timerCountDown(player);
     }, 1000);
 
     if (winner) clearInterval(interval);
-    if (timer.X === 0) {
-      resetTimer("X");
-      setPlayer("O");
-    }
-    if (timer.O === 0) {
-      resetTimer("O");
-      setPlayer("X");
+
+    if (timer[player] === 0) {
+      timeOutSwapPlayers(player);
     }
 
     return () => clearInterval(interval);
-  }, [player, timer.X, timer.O, winner, start, isFull]);
+  }, [
+    player,
+    timer.X,
+    timerCountDown,
+    timeOutSwapPlayers,
+    start,
+    isFull,
+    winner,
+    timer,
+  ]);
 
   return (
     <>
       <div className={styles.buttons}>
-        <Button onClick={() => resetScore()}>Reset Score</Button>
-        <Button onClick={() => startAndPauseGame()}>
+        <Button onClick={() => resetBoard()}>Reset Board</Button>
+        <Button onClick={() => startAndPauseGame(winner)}>
           {start ? "Pause" : "Start"}
         </Button>
         <Button onClick={() => restartGame()}>Restart</Button>
