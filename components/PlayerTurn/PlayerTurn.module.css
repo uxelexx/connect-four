@@ -1,0 +1,43 @@
+.info {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 13rem;
+  height: 10rem;
+  z-index: 5;
+  margin-top: -2rem;
+  border: 3px solid var(--border-color);
+  border-radius: 1.5rem;
+  box-shadow: 0 10px 0px var(--box-shadow-color);
+  padding: 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+.info h4 {
+  text-transform: uppercase;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.info p {
+  font-size: 4rem;
+  font-weight: bold;
+}
+
+.info[data-player="X"] {
+  background-color: var(--player-x-color);
+}
+
+.info[data-player="O"] {
+  background-color: var(--player-o-color);
+  color: black;
+}
+
+.info[data-player="Tie"] {
+  background-color: var(--tie-color);
+  color: black;
+}

@@ -1,0 +1,44 @@
+.board {
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  gap: var(--cell-gap);
+  padding: 1rem;
+  padding-bottom: 4.5rem;
+  border-radius: 2.5rem;
+  border: 3px solid var(--border-color);
+  box-shadow: 0 10px 0px var(--box-shadow-color);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--cell-gap);
+}
+
+.cell {
+  background-color: var(--primary-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border-radius: 100%;
+  border: 3px solid var(--border-color);
+  box-shadow: inset 0px 7px 0px var(--box-shadow-color);
+  cursor: pointer;
+}
+
+.X {
+  box-shadow: inset 0px 7px 0px rgba(0, 0, 0, 0.5);
+  background-color: var(--player-x-color);
+}
+
+.O {
+  box-shadow: inset 0px 7px 0px rgba(0, 0, 0, 0.5);
+  background-color: var(--player-o-color);
+}
