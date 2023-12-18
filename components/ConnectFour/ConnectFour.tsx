@@ -84,16 +84,7 @@ export default function ConnectFour() {
     }
 
     return () => clearInterval(interval);
-  }, [
-    player,
-    timer.X,
-    timerCountDown,
-    timeOutSwapPlayers,
-    start,
-    isFull,
-    winner,
-    timer,
-  ]);
+  }, [player, timer.X, start, isFull, winner, timer]);
 
   return (
     <>
