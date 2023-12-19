@@ -79,7 +79,7 @@ export default function reducer(state: InitialState, action: Actions) {
       }
 
       case RESET_GAME: {
-        return { ...initialState, score: draft.score, start: true };
+        return { ...initialState, score: { ...draft.score }, start: true };
       }
 
       default: {
