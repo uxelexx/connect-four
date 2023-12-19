@@ -90,7 +90,11 @@ export default function ConnectFour() {
     <>
       <div className={styles.buttons}>
         <Button onClick={() => resetBoard()}>Reset Board</Button>
-        <Button onClick={() => startAndPauseGame(winner)}>
+        <Button
+          onClick={() => {
+            if (!winner) startAndPauseGame();
+          }}
+        >
           {start ? "Pause" : "Start"}
         </Button>
         <Button onClick={() => restartGame()}>Restart</Button>

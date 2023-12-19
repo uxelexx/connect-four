@@ -21,10 +21,8 @@ export const dispatcher = (dispatch: DispatchFn) => ({
     dispatch({ type: SET_GAME, payload: false });
     dispatch({ type: UPDATE_SCORE, payload: player });
   },
-  startAndPauseGame: (winner: Winner) => {
-    if (!winner) {
-      dispatch({ type: START_PAUSE });
-    }
+  startAndPauseGame: () => {
+    dispatch({ type: START_PAUSE });
   },
   restartGame: () => {
     dispatch({ type: RESET_GAME });
