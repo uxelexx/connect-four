@@ -14,9 +14,8 @@ function Board({ board, addPiece, player }: BoardProps) {
       {board.map((row, rowIdx) => (
         <div key={rowIdx} className={styles.row}>
           {row.map((_, columnIdx) => {
-            let active = "";
             const activeCell = board[rowIdx][columnIdx];
-
+            let active = "";
             if (activeCell === "X") active = styles["X"];
             if (activeCell === "O") active = styles["O"];
 
@@ -24,7 +23,7 @@ function Board({ board, addPiece, player }: BoardProps) {
               <div
                 onClick={() => addPiece(columnIdx, player)}
                 key={columnIdx}
-                className={styles.cell + " " + active}
+                className={`${styles.cell} ${active}`}
               />
             );
           })}
