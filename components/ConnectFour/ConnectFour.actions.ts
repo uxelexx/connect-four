@@ -15,6 +15,12 @@ import { Dispatch } from "react";
 
 type DispatchFn = Dispatch<Actions>;
 
+const confirmReset = () => {
+  return confirm(
+    "Are you sure you want to reset the score and restart the game?",
+  );
+};
+
 export const dispatcher = (dispatch: DispatchFn) => ({
   setWinnerAndGame: (player: Player) => {
     dispatch({ type: SET_WINNER, payload: player });
@@ -35,7 +41,7 @@ export const dispatcher = (dispatch: DispatchFn) => ({
     dispatch({ type: RESET_TURN_TIMER, payload: player });
   },
   resetBoard: () => {
-    if (confirm("Are you sure you want to reset the score and restart game?")) {
+    if (confirmReset()) {
       dispatch({ type: RESET_SCORE });
       dispatch({ type: RESET_GAME });
     }
