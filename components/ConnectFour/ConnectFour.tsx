@@ -55,11 +55,6 @@ export default function ConnectFour() {
     const row = board.findLastIndex(row => row[column] === "");
 
     if (row >= 0) {
-      if (isFull) {
-        setWinner("Tie");
-        return;
-      }
-
       const newBoard = produce(board, draft => {
         draft[row][column] = player;
       });
@@ -71,7 +66,11 @@ export default function ConnectFour() {
   }
 
   useEffect(() => {
-    if (!start || isFull) return;
+    if (!start) return;
+    if (isFull) {
+      setWinner("Tie");
+      return;
+    }
 
     const interval = setInterval(() => {
       timerCountDown(player);
@@ -84,7 +83,7 @@ export default function ConnectFour() {
     }
 
     return () => clearInterval(interval);
-  }, [player, start, isFull, winner, timer]);
+  }, [player, start, isFull, winner, timer, isFull]);
 
   return (
     <>
