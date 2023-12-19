@@ -24,10 +24,14 @@ function checkWin(
   return true;
 }
 
-function checkDiagonal(board: Board) {
-  for (let row = 3; row < ROWS; row++) {
+function checkDiagonals(board: Board, reverse: boolean) {
+  const rowStart = reverse ? 0 : 3;
+  const rowEnd = reverse ? ROWS - 3 : ROWS;
+  const rowIncrement = reverse ? 1 : -1;
+
+  for (let row = rowStart; row < rowEnd; row++) {
     for (let col = 0; col < COLUMNS - 3; col++) {
-      if (checkWin(board, row, col, -1, 1)) {
+      if (checkWin(board, row, col, rowIncrement, 1)) {
         return true;
       }
     }
@@ -36,16 +40,12 @@ function checkDiagonal(board: Board) {
   return false;
 }
 
-function checkDiagonalReverse(board: Board) {
-  for (let row = 0; row < ROWS - 3; row++) {
-    for (let col = 0; col < COLUMNS - 3; col++) {
-      if (checkWin(board, row, col, 1, 1)) {
-        return true;
-      }
-    }
-  }
+function checkDiagonal(board: Board) {
+  return checkDiagonals(board, false);
+}
 
-  return false;
+function checkDiagonalReverse(board: Board) {
+  return checkDiagonals(board, true);
 }
 
 function checkVertical(board: Board) {
